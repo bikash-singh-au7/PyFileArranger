@@ -1,0 +1,7 @@
+README.md
+setup.py
+PyFileArranger/__init__.py
+PyFileArranger.egg-info/PKG-INFO
+PyFileArranger.egg-info/SOURCES.txt
+PyFileArranger.egg-info/dependency_links.txt
+PyFileArranger.egg-info/top_level.txt
