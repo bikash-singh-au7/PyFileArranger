@@ -30,7 +30,7 @@ class Arrange:
         for dir, fName, files in all_files:
             for file in files:
                 ext = file.split(sep=".")
-                directory = path+"/arranged/"+ext[1]+"_files"
+                directory = path+"/arranged/"+ext[-1]+"_files"
                 if os.path.exists(directory):
                     pass
                 else:
@@ -56,12 +56,14 @@ class Arrange:
                 directory = dir+'/'+f
                 ext = f.split(sep=".")
                 try:
-                    moving_dir = path+"/arranged/"+ext[1]+"_files"
+                    moving_dir = path+"/arranged/"+ext[-1]+"_files"
                     shutil.move(directory, moving_dir)
                 except shutil.Error:
                     continue
-        print("arranged Alll Files")
+        print("Arranged Alll Files")
 
         # Remove empty folders
         self.remove_directory(path)
         
+a = Arrange()
+a.arrange()
