@@ -9,7 +9,7 @@ class Arrange:
         print("[3] File Size")
         print("[4] File Creation Date")
         choice = int(input("Enter Your Choice: "))
-        # For Extension
+        # According To Extension
         if choice == 1:
             path = input("Enter Directory: ")
             if(os.path.exists(path)):
@@ -17,7 +17,7 @@ class Arrange:
             else:
                 print("Directory Not Exists")
         
-        # For Modify Date
+        # According To File Modification Date
         elif choice == 2:
             path = input("Enter Directory: ")
             if(os.path.exists(path)):
@@ -25,15 +25,21 @@ class Arrange:
             else:
                 print("Directory Not Exists")
         
-        # For File Size
+        # According To File Size
         elif choice == 3:
             path = input("Enter Directory: ")
             if(os.path.exists(path)):
                 self.arrange_file_with_size(path)
             else:
                 print("Directory Not Exists")
+        
+        # According To File Creation Date
         elif choice == 4:
-            pass
+            path = input("Enter Directory: ")
+            if(os.path.exists(path)):
+                self.arrange_file_with_creation_date(path)
+            else:
+                print("Directory Not Exists")
         else:
             print("Wrong Input !!")
 
@@ -42,6 +48,25 @@ class Arrange:
             pass
         else:
             os.mkdir(path+"/arranged")
+
+    def make_day_directory(self, path):
+        # For Today
+        if os.path.exists(path+"/arranged/today"):
+            pass
+        else:
+            os.mkdir(path+"/arranged/today")
+        # For Yesterday
+        if os.path.exists(path+"/arranged/yesterday"):
+            pass
+        else:
+            os.mkdir(path+"/arranged/yesterday")
+        
+        # For Erlier
+        if os.path.exists(path+"/arranged/earlier"):
+            pass
+        else:
+            os.mkdir(path+"/arranged/earlier")
+
 
     def remove_directory(self, path):
         all_dir = os.listdir(path)
@@ -64,16 +89,71 @@ class Arrange:
 
     #=================Arrange According to Modification Date======
     def arrange_file_with_modification_date(self, path):
+        # Make Base Directory
         self.make_base_directory(path)
+        # Make Day Directory
+        self.make_day_directory(path)
         all_files = os.walk(path)
+        today_time_touple = time.localtime(time.time())
+        today = str(today_time_touple[2])+"-"+str(today_time_touple[1])+"-"+str(today_time_touple[0])
+        yesterday = str(today_time_touple[2]-1)+"-"+str(today_time_touple[1])+"-"+str(today_time_touple[0])
         for dir, fileName, files in all_files:
             for f in files:
                 directory = dir+'/'+f
                 # print(f, time.ctime(os.path.getmtime(directory)))
-                print(f, time.localtime(os.path.getmtime(directory)))
+                modify_date_touple = time.localtime(os.path.getmtime(directory))
+                modify_date = str(modify_date_touple[2])+"-"+str(modify_date_touple[1])+"-"+str(modify_date_touple[0])
+
+                if modify_date == today:
+                    dest = path+"/arranged/today/"
+                    self.move_file(directory, dest)
+                    # print("Today ",f, modify_date)
+                elif modify_date == yesterday:
+                    dest = path+"/arranged/yesterday/"
+                    self.move_file(directory, dest)
+                    # print("Yesterday ",f, modify_date)
+                else:
+                    dest = path+"/arranged/earlier/"
+                    self.move_file(directory, dest)
+                    # print("Earlerr",f, modify_date)
+
         # Remove all directory except arranged directory
-        # self.remove_directory(path)
-        # print("Arranged Successfully")
+        self.remove_directory(path)
+        print("Arranged File Successfully")
+
+    #=================Arrange According to Creation Date======
+    def arrange_file_with_creation_date(self, path):
+        # Make Base Directory
+        self.make_base_directory(path)
+        # Make Day Directory
+        self.make_day_directory(path)
+        all_files = os.walk(path)
+        today_time_touple = time.localtime(time.time())
+        today = str(today_time_touple[2])+"-"+str(today_time_touple[1])+"-"+str(today_time_touple[0])
+        yesterday = str(today_time_touple[2]-1)+"-"+str(today_time_touple[1])+"-"+str(today_time_touple[0])
+        for dir, fileName, files in all_files:
+            for f in files:
+                directory = dir+'/'+f
+                # print(f, time.ctime(os.path.getmtime(directory)))
+                created_date_touple = time.localtime(os.path.getctime(directory))
+                created_date = str(created_date_touple[2])+"-"+str(created_date_touple[1])+"-"+str(created_date_touple[0])
+                print(f, created_date)
+                if created_date == today:
+                    dest = path+"/arranged/today/"
+                    self.move_file(directory, dest)
+                    # print("Today ",f, modify_date)
+                elif created_date == yesterday:
+                    dest = path+"/arranged/yesterday/"
+                    self.move_file(directory, dest)
+                    # print("Yesterday ",f, modify_date)
+                else:
+                    dest = path+"/arranged/earlier/"
+                    self.move_file(directory, dest)
+                    # print("Earlerr",f, modify_date)
+
+        # Remove all directory except arranged directory
+        self.remove_directory(path)
+        print("Arranged File Successfully")
 
     # ================Arrange According To Size===================
     def arrange_file_with_size(self, path):
@@ -147,5 +227,8 @@ class Arrange:
         self.remove_directory(path)
     # ================End Section=================================
     
-a = Arrange()
-a.arrange()
+# Create A Object
+# a = Arrange()
+
+# Callig arrange() method to arrange the file
+# a.arrange()
